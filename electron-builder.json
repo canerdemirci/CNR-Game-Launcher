@@ -1,0 +1,57 @@
+{
+    "appId": "com.cnrdmrc.cnrgamelauncher",
+    "productName": "CNR Game Launcher",
+    "copyright": "Copyright © 2025 Caner Demirci",
+    "publish": {
+      "provider": "github",
+      "repo": "your-repo-name",
+      "owner": "your-github-username",
+      "private": false,
+      "releaseType": "draft"
+    },
+    "files": ["dist-electron", "dist-react"],
+    "extraResources": [
+        "dist-electron/preload.cjs"
+    ],
+    "icon": "./desktop-icon.png",
+    "mac": {
+        "target": [
+            {
+                "target": "dmg",
+                "arch": ["x64", "arm64", "universal"]
+            }
+        ]
+    },
+    "linux": {
+        "target": "AppImage",
+        "category": "Utility"
+    },
+    "win": {
+        "target": [
+            {
+                "target": "nsis",
+                "arch": ["x64"]
+            },
+            {
+                "target": "appx",
+                "arch": ["x64"]
+            }
+        ]
+    },
+    "nsis": {
+        "oneClick": false,
+        "allowElevation": true,
+        "allowToChangeInstallationDirectory": true,
+        "createDesktopShortcut": true,
+        "createStartMenuShortcut": true,
+        "artifactName": "${productName} Setup-${version}.${ext}"
+    },
+    "appx": {
+        "applicationId": "f4273ce6-726c-46d0-9855-366b236cab17",
+        "identityName": "53688canerdemirci.CNRGameLauncher",
+        "publisher": "CN=B96C2911-5212-48E3-9B87-F99EF1E62C27",
+        "publisherDisplayName": "Your Company Name",
+        "displayName": "canerdemirci",
+        "languages": ["en-US"]
+    }
+}

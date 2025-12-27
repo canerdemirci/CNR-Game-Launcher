@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy" 
+      content="default-src 'self' app-image:;
+               script-src 'self' 'unsafe-inline';
+               style-src 'self' 'unsafe-inline';
+               img-src 'self' data: app-image: blob:;
+               connect-src 'self';
+               font-src 'self';
+               object-src 'none';
+               media-src 'self';
+               frame-src 'none';"
+    />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CNR - Game Launcher</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/ui/main.tsx"></script>
+  </body>
+</html>

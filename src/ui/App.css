@@ -1,0 +1,302 @@
+@font-face {
+  font-family: 'ScienceGothic';
+  src: url('./assets/fonts/ScienceGothic_Expanded-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'LeagueSpartan';
+  src: url('./assets/fonts/LeagueSpartan-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+* {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-app-region: no-drag;
+}
+
+input, textarea, select, button,
+[contenteditable="true"], 
+[contenteditable="plaintext-only"],
+[contenteditable] {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+.draggable {
+    -webkit-app-region: drag !important;
+}
+
+.not-draggable {
+    -webkit-app-region: no-drag !important;
+}
+
+.gradient_anim2 {
+    background-image: conic-gradient(red,yellow,lime,cyan,blue,magenta,red);
+    background-size: 200% 200%;
+    -webkit-animation: Gradient_Animation2 2s ease infinite;
+    -moz-animation: Gradient_Animation2 2s ease infinite;
+    animation: Gradient_Animation2 2s ease infinite;
+}
+
+.game-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: "LeagueSpartan", sans-serif;
+}
+    .game-table th {
+        background-image: linear-gradient(
+            to top,
+            rgb(57, 149, 195),
+            rgb(47, 123, 185)
+        );
+        color: #fff;
+        text-align: left;
+        padding: 15px 5px 15px 8px;
+    }
+    .game-table td {
+        cursor: pointer;
+        overflow: hidden; 
+        white-space: nowrap; 
+        text-overflow: ellipsis;
+        padding: 10px 5px 10px 8px;
+    }
+        .game-table td:first-child {
+            width: 2rem;
+        }
+        .game-table td:nth-child(2){
+            width: 2rem;
+        }
+        .game-table td:nth-child(3) {
+            width: 20rem;
+        }
+        .game-table td:nth-child(4) {
+            width: 10rem;
+        }
+        .game-table td:nth-child(5) {
+            width: 10rem;
+        }
+        .game-table td:nth-child(6) {
+            width: 10rem;
+        }
+        .game-table td:nth-child(7) {
+            width: 10rem;
+        }
+    .game-table tbody tr:nth-child(even) {
+        color: #000;
+        background-color: #def0fb;
+    }
+    .game-table tbody tr:nth-child(odd) {
+        color: #000;
+        background-color: #d2e4fb;
+    }
+    .game-table tbody tr:hover {
+        background-image: linear-gradient(to bottom, #0d56bb, #0f3170 80%);
+        background-size: 100% 200%;
+        color: #fff;
+        -webkit-animation: Gradient_Animation1 1.5s ease infinite;
+        -moz-animation: Gradient_Animation1 1.5s ease infinite;
+        animation: Gradient_Animation1 1.5s ease infinite;
+    }
+
+/* DARK MODE GAME TABLE */
+.dark .game-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: "LeagueSpartan", sans-serif;
+}
+    .dark .game-table th {
+        background-image: linear-gradient(
+            to top,
+            rgb(36, 36, 36),
+            rgb(0, 0, 0)
+        );
+        color: #fff;
+        text-align: left;
+        padding: 15px 5px 15px 8px;
+        border-bottom: 2px solid #ffffff14;
+    }
+    .dark .game-table td {
+        cursor: pointer;
+        overflow: hidden; 
+        white-space: nowrap; 
+        text-overflow: ellipsis;
+        padding: 10px 5px 10px 8px;
+    }
+        .dark .game-table td:first-child {
+            width: 2rem;
+        }
+        .dark .game-table td:nth-child(2){
+            width: 2rem;
+        }
+        .dark .game-table td:nth-child(3) {
+            width: 20rem;
+        }
+        .dark .game-table td:nth-child(4) {
+            width: 10rem;
+        }
+        .dark .game-table td:nth-child(5) {
+            width: 10rem;
+        }
+        .dark .game-table td:nth-child(6) {
+            width: 10rem;
+        }
+        .dark .game-table td:nth-child(7) {
+            width: 10rem;
+        }
+    .dark .game-table tbody tr:nth-child(even) {
+        color: #fff;
+        background-color: #000;
+    }
+    .dark .game-table tbody tr:nth-child(odd) {
+        color: #fff;
+        background-color: #0e0e0e;
+    }
+    .dark .game-table tbody tr:hover {
+        background-image: linear-gradient(to bottom, #67bb0d, #41700f 80%);
+        background-size: 100% 200%;
+        color: #fff;
+        -webkit-animation: Gradient_Animation1 1.5s ease infinite;
+        -moz-animation: Gradient_Animation1 1.5s ease infinite;
+        animation: Gradient_Animation1 1.5s ease infinite;
+    }
+
+@-webkit-keyframes Gradient_Animation1 {
+    0% { background-position: 0% 0%; }
+    50% { background-position: 0% 100%; }
+    100% { background-position: 0% 0%; }
+}
+@-moz-keyframes Gradient_Animation1 {
+    0% { background-position: 0% 0%; }
+    50% { background-position: 0% 100%; }
+    100% { background-position: 0% 0%; }
+}
+@keyframes Gradient_Animation1 { 
+    0% { background-position: 0% 0%; }
+    50% { background-position: 0% 100%; }
+    100% { background-position: 0% 0%; }
+}
+
+@-webkit-keyframes Gradient_Animation2 {
+    0% { background-position: 0% 0%; }
+    25% { background-position: 100% 0%; }
+    50% { background-position: 100% 100%; }
+    75% { background-position: 0% 100%; }
+    100% { background-position: 0% 0%; }
+}
+@-moz-keyframes Gradient_Animation2 {
+    0% { background-position: 0% 0%; }
+    25% { background-position: 100% 0%; }
+    50% { background-position: 100% 100%; }
+    75% { background-position: 0% 100%; }
+    100% { background-position: 0% 0%; }
+}
+@keyframes Gradient_Animation2 { 
+    0% { background-position: 0% 0%; }
+    25% { background-position: 100% 0%; }
+    50% { background-position: 100% 100%; }
+    75% { background-position: 0% 100%; }
+    100% { background-position: 0% 0%; }
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+    width: 0;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.08);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.197);
+    background-clip: padding-box;
+    backdrop-filter: blur(10px);
+    box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.2);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.595);
+    background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:active {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.dark ::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.09);
+    background-clip: padding-box;
+    backdrop-filter: blur(10px);
+    box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.2);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.4);
+    background-clip: padding-box;
+}
+
+.dark ::-webkit-scrollbar-thumb:active {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.gradient_anim3 {
+    background: linear-gradient(270deg, #000921, #000000, #210019);
+    background-size: 800% 800%;
+
+    -webkit-animation: Gradient_Animation3 5s ease infinite;
+    -moz-animation: Gradient_Animation3 5s ease infinite;
+    animation: Gradient_Animation3 5s ease infinite;
+}
+
+@-webkit-keyframes Gradient_Animation3 {
+    0%{background-position:0% 51%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 51%}
+}
+@-moz-keyframes Gradient_Animation3 {
+    0%{background-position:0% 51%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 51%}
+}
+@keyframes Gradient_Animation3 {
+    0%{background-position:0% 51%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 51%}
+}
+
+@keyframes gradientFlow {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    
+    }
+}
+.gradient_anim4 {
+    margin: 0;
+    height: 100vh;
+    background: linear-gradient(45deg, #000939, #000, #410101);
+    background-size: 400% 400%;
+    animation: gradientFlow 4s ease infinite;
+}

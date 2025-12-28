@@ -28,11 +28,12 @@
         ]
     },
     "appx": {
-        "applicationId": "f4273ce6-726c-46d0-9855-366b236cab17",
+        "applicationId": "CNRGameLauncher",
         "identityName": "53688canerdemirci.CNRGameLauncher",
         "publisher": "CN=B96C2911-5212-48E3-9B87-F99EF1E62C27",
-        "publisherDisplayName": "Your Company Name",
-        "displayName": "canerdemirci",
+        "publisherDisplayName": "canerdemirci",
+        "displayName": "CNR Game Launcher",
         "languages": ["en-US"]
     }
+
 }

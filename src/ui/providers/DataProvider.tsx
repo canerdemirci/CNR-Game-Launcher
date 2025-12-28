@@ -43,6 +43,7 @@ export const DataProvider: React.FC<{children: React.ReactNode}> = ({ children }
             c => c.gameIds.some(
                 gid => installedGameIds.has(gid))
             )
+                .sort((a, b) => a.name.localeCompare(b.name))
         )
     }, [collections, games])
 

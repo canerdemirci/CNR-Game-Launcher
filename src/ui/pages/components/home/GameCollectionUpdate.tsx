@@ -40,7 +40,7 @@ export default function GameCollectionUpdate({
     }
 
     function handleCancel() {
-        hideWindow([])
+        hideWindow(undefined)
     }
     
     return (

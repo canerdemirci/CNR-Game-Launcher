@@ -59,6 +59,7 @@ export interface AppHeaderProps {
     excludedButtons: AppbarButtons[]
     onCollectionsClick?: () => void
     toolbarProps?: {
+        showToolbar: boolean
         defaultViewStyle: ViewKind
         defaultFilterData: FilterData
         filterData: FilterData
@@ -72,7 +73,7 @@ export interface AppHeaderProps {
 export function AppHeader({
     pageTitle,
     excludedButtons,
-    toolbarProps,
+    toolbarProps = { showToolbar: true } as AppHeaderProps['toolbarProps'],
     onCollectionsClick,
 }: AppHeaderProps) {
     const navigate = useNavigate()
@@ -190,7 +191,7 @@ export function AppHeader({
                 }
             </div>
             {
-                !excludedButtons.includes(AppbarButtons.TOOLBAR) &&
+                (!excludedButtons.includes(AppbarButtons.TOOLBAR) && toolbarProps?.showToolbar) &&
                 <div
                     className={clsx([
                         "flex justify-between w-full items-center mx-4"

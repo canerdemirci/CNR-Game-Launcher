@@ -398,6 +398,11 @@ export default function BigPicture() {
     const lastKeyTime = useRef(0)
 
     useEffect(() => {
+        if (games.filter(g => g.isInstalled).length === 0) {
+            navigate('/home')
+            return
+        }
+        
         appContext.setAppHeaderProps(undefined)
 
         window.electron.app.setFullscreen(true)

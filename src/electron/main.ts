@@ -498,11 +498,18 @@ async function exportStoreData(): Promise<BackupProcessResult | never> {
 
         const targetUploadsDirPath = path.join(targetBackupDirPath, UPLOADS_FOLDER_NAME)
 
-        if (fsExtra.existsSync(uploadsFolderPath) === false) {
-            fsExtra.mkdirSync(uploadsFolderPath)
+        try {
+            if ((await fs.stat(uploadsFolderPath)).isDirectory()) {
+                await fsExtra.copy(uploadsFolderPath, targetUploadsDirPath, { overwrite: true })
+            }
+        } catch (error) {
+            console.warn(
+                `Warning: Uploads folder (${UPLOADS_FOLDER_NAME}) not found or accessible. ` +
+                `Skipping media backup.`
+            )
         }
 
-        await fsExtra.copy(uploadsFolderPath, targetUploadsDirPath, { overwrite: true })
+        console.log('App data exported successfully to: ', targetBackupDirPath)
 
         return 'completed'
     } catch (error) {
@@ -563,23 +570,42 @@ async function importStoreData(): Promise<BackupRestoreProcessResult | void | ne
 
         const backupUploadsPath = path.join(backupDirPath, UPLOADS_FOLDER_NAME)
 
-        if (fsExtra.existsSync(backupUploadsPath) === false) {
-            fsExtra.mkdirSync(uploadsFolderPath)
-        }
+        let hasUploadsFolder = false
 
         try {
             const stats = await fs.stat(backupUploadsPath)
+            hasUploadsFolder = stats.isDirectory()
+        } catch (error) {
+            hasUploadsFolder = false
+        }
 
-            if (stats.isDirectory()) {
-                if (await fs.stat(currentUploadsDirPath)) {
-                    await fs.rm(currentUploadsDirPath, { recursive: true, force: true })
-                }
+        if (!hasUploadsFolder) {
+            console.warn(
+                `Warning: Backup uploads folder (${UPLOADS_FOLDER_NAME}) ` +
+                `not found. Skipping media restore.`
+            )
 
-                await fs.mkdir(currentUploadsDirPath, { recursive: true })
-                await fsExtra.copy(backupUploadsPath, currentUploadsDirPath, { overwrite: true })
+            return restartApp()
+        }
 
-                console.log('Uploads folder restored successfully.')
+        try {
+            // Remove existing uploads folder if it exists
+            try {
+                await fs.rm(currentUploadsDirPath, { recursive: true, force: true })
+                console.log('Existing uploads folder removed.')
+            } catch (err) {
+                // Ignore if it didn't exist (force: true already handles some cases)
+                console.warn('Could not remove existing uploads folder:', err)
             }
+            
+            await fs.mkdir(currentUploadsDirPath, { recursive: true })
+            await fsExtra.copy(
+                backupUploadsPath,
+                currentUploadsDirPath,
+                { overwrite: true }
+            )
+
+            console.log('Uploads folder restored successfully.')
         } catch (error) {
             console.warn(
                 `Warning: Backup uploads folder (${UPLOADS_FOLDER_NAME}) ` +

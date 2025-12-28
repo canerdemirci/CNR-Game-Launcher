@@ -1,5 +1,6 @@
 import clsx from "clsx"
 import { MdDelete } from "react-icons/md"
+import { clampText } from "../../../utils"
 
 interface Props {
     collection: GameCollection
@@ -47,7 +48,7 @@ export default function CollectionButton({
             ])}
             onClick={() => onClick(collection)}
         >
-            <span className="first-letter:uppercase">{collection.name}</span>
+            <span className="first-letter:uppercase">{clampText(collection.name, 15)}</span>
             <div
                 className={clsx([
                     "rounded-full p-1",

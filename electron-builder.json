@@ -2,13 +2,6 @@
     "appId": "com.cnrdmrc.cnrgamelauncher",
     "productName": "CNR Game Launcher",
     "copyright": "Copyright © 2025 Caner Demirci",
-    "publish": {
-      "provider": "github",
-      "repo": "your-repo-name",
-      "owner": "your-github-username",
-      "private": false,
-      "releaseType": "draft"
-    },
     "files": ["dist-electron", "dist-react"],
     "extraResources": [
         "dist-electron/preload.cjs"

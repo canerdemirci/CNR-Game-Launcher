@@ -434,7 +434,7 @@ export default function Settings() {
                     />
                 </div>
                 {/* Backup & Restore Section */}
-                {appData.games.length > 0 && <div
+                <div
                     className="w-110 my-4 rounded-2xl border border-gray-400 dark:border-gray-700 bg-gray-100 dark:bg-gray-800"
                 >
                     <div
@@ -445,11 +445,11 @@ export default function Settings() {
                             "flex items-center justify-center gap-8 p-4"
                         ])}
                     >
-                        <Button
+                        {appData.games.length > 0 && <Button
                             caption="BACKUP"
                             styleVariant={buttonStyleVariants[1]}
                             onClick={handleBackup}
-                        />
+                        />}
                         <Button
                             caption="RESTORE BACKUP"
                             styleVariant={buttonStyleVariants[1]}
@@ -460,7 +460,7 @@ export default function Settings() {
                         * A folder is created after the backup process. You can then restore the 
                         backup by referencing this folder.
                     </p>
-                </div>}
+                </div>
             </section>
         </MainLayout>
     )

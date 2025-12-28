@@ -103,6 +103,7 @@ export default function Home() {
             ),
             onCollectionsClick: handleCollectionToggleClick,
             toolbarProps: {
+                showToolbar: filteredGames.length > 0,
                 defaultViewStyle: appContext.gameViewKind,
                 defaultFilterData: defaultFilterData,
                 filterData: filterData,
@@ -112,7 +113,7 @@ export default function Home() {
                 onChangeSearch: handleSearchboxChange
             }
         })
-    }, [collections.length, filterData, games.length])
+    }, [collections, filterData, games, filteredGames])
 
     useEffect(() => {
         if (collections.length &&
@@ -508,7 +509,7 @@ export default function Home() {
                             />,
                             (data) => {
                                 if (data) {
-                                    if (!data.length) return
+                                    if (!data) return
 
                                     const gColls = data as GameCollection[]
 
@@ -525,7 +526,18 @@ export default function Home() {
 
                                     // UI updates
                                     window.electron.gameCollections.get()
-                                        .then(colls => setCollections(colls))
+                                        .then(colls => {
+                                            setCollections(colls)
+
+                                            if (selectedCollection) {
+                                                setFilterData(prev => ({
+                                                    ...prev,
+                                                    collection: colls.find(
+                                                        c => c.id === selectedCollection.id
+                                                    )
+                                                }))
+                                            }
+                                        })
                                     window.electron.games.get()
                                         .then(gs => {
                                             setGames(gs)
@@ -614,6 +626,7 @@ export default function Home() {
                         games={filteredGames}
                         gameOnClick={handleGameClick}
                         gameOnRightClick={handleGameRightClick}
+                        selectedCollection={selectedCollection}
                     />
                 </div>
                 {/* Info section */}

@@ -22,22 +22,10 @@
     "win": {
         "target": [
             {
-                "target": "nsis",
-                "arch": ["x64"]
-            },
-            {
                 "target": "appx",
                 "arch": ["x64"]
             }
         ]
-    },
-    "nsis": {
-        "oneClick": false,
-        "allowElevation": true,
-        "allowToChangeInstallationDirectory": true,
-        "createDesktopShortcut": true,
-        "createStartMenuShortcut": true,
-        "artifactName": "${productName} Setup-${version}.${ext}"
     },
     "appx": {
         "applicationId": "f4273ce6-726c-46d0-9855-366b236cab17",

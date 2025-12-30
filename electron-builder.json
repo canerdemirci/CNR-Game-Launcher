@@ -33,7 +33,8 @@
         "publisher": "CN=B96C2911-5212-48E3-9B87-F99EF1E62C27",
         "publisherDisplayName": "canerdemirci",
         "displayName": "CNR Game Launcher",
-        "languages": ["en-US"]
+        "languages": ["en-US"],
+        "assets": "./src/ui/assets"
     }
 
 }

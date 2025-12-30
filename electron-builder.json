@@ -28,7 +28,6 @@
         ]
     },
     "appx": {
-        "icon": "build/appx",
         "applicationId": "CNRGameLauncher",
         "identityName": "53688canerdemirci.CNRGameLauncher",
         "publisher": "CN=B96C2911-5212-48E3-9B87-F99EF1E62C27",

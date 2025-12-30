@@ -34,7 +34,7 @@
         "publisherDisplayName": "canerdemirci",
         "displayName": "CNR Game Launcher",
         "languages": ["en-US"],
-        "assets": "./src/ui/assets"
+        "assetsDirectory": "./src/ui/assets"
     }
 
 }

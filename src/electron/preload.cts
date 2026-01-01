@@ -59,7 +59,8 @@ electron.contextBridge.exposeInMainWorld("electron", {
         { id: id, collectionIds: collectionIds }
       )
     },
-    saveImage: (imageData: string) => ipcInvoke('saveImage', imageData)
+    saveImage: (imageData: string) => ipcInvoke('saveImage', imageData),
+    selectFile: (options: Electron.OpenDialogOptions) => ipcInvoke('selectFile', options)
 } satisfies Window['electron'])
 
 function ipcInvoke<Key extends keyof EventPayloadMapping>(

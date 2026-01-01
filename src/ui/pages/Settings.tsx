@@ -187,7 +187,8 @@ export default function Settings() {
             pageTitle: "Settings",
             excludedButtons: [
                 AppbarButtons.ADD, AppbarButtons.SETTINGS, AppbarButtons.COLLECTIONS,
-                AppbarButtons.TOOLBAR
+                AppbarButtons.BIGPICTURE, AppbarButtons.ORDERBOX, AppbarButtons.FILTER,
+                AppbarButtons.VIEWSELECTOR, AppbarButtons.SEARCH
             ]
         })
     }, [])

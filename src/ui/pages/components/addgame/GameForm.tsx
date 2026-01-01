@@ -1,6 +1,7 @@
 import clsx from "clsx"
 import { useEffect, useState } from "react"
 import { MdOutlineBrokenImage, MdUploadFile } from "react-icons/md"
+import { PiDotsThreeOutlineFill } from "react-icons/pi"
 import Button, { buttonStyleVariants } from "../../../form_elements/Button"
 import CheckBox, { checkBoxStyleVariants } from "../../../form_elements/CheckBox"
 import { CheckList, CheckListItem } from "../../../form_elements/CheckList"
@@ -107,6 +108,21 @@ export default function GameForm<T extends Mode>({
         setFormData(prev => ({ ...prev, cardIconFile: file }))
     }
 
+    function handleGameExecPathSelectorChange() {
+        window.electron.selectFile({
+            title: "Select Game Executable File",
+            properties: ['openFile'],
+            filters: [
+                { name: 'Executables', extensions: ['exe', 'bat', 'cmd', 'sh', 'app'] },
+                { name: 'All Files', extensions: ['*'] }
+            ]
+        }).then(filePaths => {
+            if (filePaths && filePaths.length > 0) {
+                setFormData(prev => ({ ...prev, exePath: filePaths[0] }))
+            }
+        })
+    }
+
     function handleSaveGame() {
         if (formData.name.trim().length <= 1) {
             showMessage(
@@ -142,18 +158,30 @@ export default function GameForm<T extends Mode>({
                         value={formData.name}
                         onChange={handleGameNameChange}
                     />
-                    <TextInput
-                        id="exec-path"
-                        styleVariant={textInputStyleVariants[1]}
-                        inputStyle={{
-                            width: "70%"
-                        }}
-                        labelText="Executable Path"
-                        minLength={2}
-                        maxLength={400}
-                        value={formData.exePath || ""}
-                        onChange={handleExecPathChange}
-                    />
+                    <div className="flex items-center gap-2">
+                        <TextInput
+                            id="exec-path"
+                            styleVariant={textInputStyleVariants[1]}
+                            inputStyle={{
+                                width: "70%"
+                            }}
+                            labelText="Executable Path"
+                            minLength={2}
+                            maxLength={400}
+                            value={formData.exePath || ""}
+                            onChange={handleExecPathChange}
+                        />
+                        <div
+                            className={clsx([
+                                "cursor-pointer p-1.5 border border-gray-500 rounded-md",
+                                "hover:bg-gray-200 hover:text-gray-600 hover:border-gray-400",
+                                "dark:hover:bg-gray-700 dark:hover:text-white", "dark:hover:border-gray-300"
+                            ])}
+                            onClick={handleGameExecPathSelectorChange}
+                        >
+                            <PiDotsThreeOutlineFill size={28} className="dark:text-white" />
+                        </div>
+                    </div>
                     <GamePathCopyChip />
                     <CheckBox
                         id="game-installed"

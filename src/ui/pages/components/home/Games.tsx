@@ -5,7 +5,7 @@ import clsx from "clsx"
 import GameIcon from "../../../assets/game-icon.png"
 import { IoGameController } from "react-icons/io5"
 import { motion } from "motion/react"
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 
 interface Props {
     viewStyle: ViewKind
@@ -47,6 +47,8 @@ export default function Games({
     gameOnRightClick
 }: Props) {
     const gamesRef = useRef<HTMLDivElement>(null)
+
+    const [selectedGame, setSelectedGame] = useState<Game | null>(null)
 
     useEffect(() => {
         gamesRef.current?.scrollTo({ top: 0, behavior: 'instant' })
@@ -155,17 +157,25 @@ export default function Games({
                         {
                             games.map((g, gi) => (
                                 <motion.div
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: [0, 1] }}
-                                    transition={{ duration: 0.1, delay: gi * 0.03 }}
                                     key={g.id}
+                                    initial={{ opacity: 0, scale: 0.9 }}
+                                    animate={{ opacity: [0, 1], scale: [0.9, 1] }}
+                                    transition={{
+                                        duration: 0.1,
+                                        delay: gi * 0.05,
+                                        type: 'spring',
+                                        damping: 5
+                                    }}
                                     className={clsx([
-                                        "cursor-pointer", "w-25", "drop-shadow-xl",
-                                        "transition-all duration-300",
-                                        "hover:opacity-75 hover:scale-115",
-                                        "dark:hover:drop-shadow-blue-500"
+                                        selectedGame?.id === g.id && [
+                                            "bg-sky-200 border border-sky-400",
+                                            "dark:bg-gray-900 dark:border-gray-700"
+                                        ],
+                                        "w-25 p-2", "drop-shadow-xl",
+                                        "rounded-md"
                                     ])}
-                                    onClick={() => gameOnClick(g)}
+                                    onClick={() => setSelectedGame(g)}
+                                    onDoubleClick={() => gameOnClick(g)}
                                     onContextMenu={(e) => handleRightClick(e, g)}
                                 >
                                     <div

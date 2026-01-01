@@ -41,7 +41,8 @@ interface Window {
             }>,
             setCollections: (id: string, collectionIds: string[]) => void
         },
-        saveImage: (imageData: string) => Promise<ImageUploadResult>
+        saveImage: (imageData: string) => Promise<ImageUploadResult>,
+        selectFile: (options: Electron.OpenDialogOptions) => Promise<string[]>
     }
 }
 
@@ -74,6 +75,7 @@ type EventPayloadMapping = {
     removeGamesFromCollection: { collectionId: string, gameIds: string[] }
     removeAGameFromAllCollections: string
     saveImage: string
+    selectFile: Electron.OpenDialogOptions
     deleteGameIcons: Array<string | undefined>
     setCollections: { id: string, collectionIds: string[] }
 }
@@ -107,6 +109,7 @@ type EventReturnMapping = {
     removeGamesFromCollection: void
     removeAGameFromAllCollections: void
     saveImage: ImageUploadResult
+    selectFile: string[]
     deleteGameIcons: { success: boolean, error?: string }
     setCollections: void
 }

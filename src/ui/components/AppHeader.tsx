@@ -24,8 +24,11 @@ export enum AppbarButtons {
     COLLECTIONS,
     ADD,
     FULLSCREEN,
-    TOOLBAR,
     BIGPICTURE,
+    ORDERBOX,
+    FILTER,
+    VIEWSELECTOR,
+    SEARCH
 }
 
 export enum OrderTypes {
@@ -59,7 +62,6 @@ export interface AppHeaderProps {
     excludedButtons: AppbarButtons[]
     onCollectionsClick?: () => void
     toolbarProps?: {
-        showToolbar: boolean
         defaultViewStyle: ViewKind
         defaultFilterData: FilterData
         filterData: FilterData
@@ -73,7 +75,7 @@ export interface AppHeaderProps {
 export function AppHeader({
     pageTitle,
     excludedButtons,
-    toolbarProps = { showToolbar: true } as AppHeaderProps['toolbarProps'],
+    toolbarProps,
     onCollectionsClick,
 }: AppHeaderProps) {
     const navigate = useNavigate()
@@ -190,53 +192,50 @@ export function AppHeader({
                     </h1>
                 }
             </div>
-            {
-                (!excludedButtons.includes(AppbarButtons.TOOLBAR) && toolbarProps?.showToolbar) &&
-                <div
-                    className={clsx([
-                        "flex justify-between w-full items-center mx-4"
-                    ])}
-                >
-                    <SelectBox
-                        styleVariant={selectBoxStyleVariants[0]}
-                        caption="Order by"
-                        options={orderTypes.map(ot => ({
-                            caption: ot.caption,
-                            value: ot.key,
-                            direction: 'ascending'
-                        }))}
-                        defaultOption={orderDefaultOption}
-                        onChange={toolbarProps!.onChangeOrder}
-                    />
-                    <SearchBox
-                        styleVariant={searchBoxStyleVariants[0]}
-                        onChange={toolbarProps!.onChangeSearch}
-                    />
-                    <div className="flex items-center gap-4">
-                        <Filter
-                            defaultFilterData={toolbarProps!.defaultFilterData}
-                            filterData={toolbarProps!.filterData}
-                            onChange={toolbarProps!.onChangeFilter}
+            <div
+                className={clsx([
+                    "flex justify-between w-full items-center mx-4"
+                ])}
+            >
+                {!excludedButtons.includes(AppbarButtons.ORDERBOX) ? <SelectBox
+                    styleVariant={selectBoxStyleVariants[0]}
+                    caption="Order by"
+                    options={orderTypes.map(ot => ({
+                        caption: ot.caption,
+                        value: ot.key,
+                        direction: 'ascending'
+                    }))}
+                    defaultOption={orderDefaultOption}
+                    onChange={toolbarProps!.onChangeOrder}
+                /> : <div className="w-6 h-6" />}
+                {!excludedButtons.includes(AppbarButtons.SEARCH) && <SearchBox
+                    styleVariant={searchBoxStyleVariants[0]}
+                    onChange={toolbarProps!.onChangeSearch}
+                />}
+                <div className="flex items-center gap-4">
+                    {!excludedButtons.includes(AppbarButtons.FILTER) ? <Filter
+                        defaultFilterData={toolbarProps!.defaultFilterData}
+                        filterData={toolbarProps!.filterData}
+                        onChange={toolbarProps!.onChangeFilter}
+                    /> : <div className="w-6 h-6" />}
+                    {!excludedButtons.includes(AppbarButtons.VIEWSELECTOR) ? <ViewSelector
+                        viewKind={toolbarProps!.defaultViewStyle}
+                        onChange={toolbarProps!.onChangeView}
+                    /> : <div className="w-6 h-6" />}
+                    {!excludedButtons.includes(AppbarButtons.BIGPICTURE) && <div
+                        onClick={handleBigPictureClick}
+                    >
+                        <CgScreen
+                            size={28}
+                            className={clsx([
+                                "text-teal-500", "cursor-pointer",
+                                "hover:opacity-75",
+                                "dark:text-white/75"
+                            ])}
                         />
-                        <ViewSelector
-                            viewKind={toolbarProps!.defaultViewStyle}
-                            onChange={toolbarProps!.onChangeView}
-                        />
-                        {!excludedButtons.includes(AppbarButtons.BIGPICTURE) && <div
-                            onClick={handleBigPictureClick}
-                        >
-                            <CgScreen
-                                size={28}
-                                className={clsx([
-                                    "text-teal-500", "cursor-pointer",
-                                    "hover:opacity-75",
-                                    "dark:text-white/75"
-                                ])}
-                            />
-                        </div>}
-                    </div>
+                    </div>}
                 </div>
-            }
+            </div>
             <div className="flex items-center gap-4">
                 <ThemeSelector />
                 { !excludedButtons.includes(AppbarButtons.LOGOUT) && <LogoutButton /> }

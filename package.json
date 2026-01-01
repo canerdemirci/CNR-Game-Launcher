@@ -3,7 +3,7 @@
   "author": "Caner Demirci",
   "description": "Game Launcher App. You can organize your games wherever from and run them in one same place",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "main": "dist-electron/main.js",
   "scripts": {

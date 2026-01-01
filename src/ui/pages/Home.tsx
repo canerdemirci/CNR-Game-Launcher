@@ -98,12 +98,21 @@ export default function Home() {
                 [AppbarButtons.BACK]
             ).concat(
                 (games.length === 0 || games.filter(g => g.isInstalled).length === 0)
-                    ? [AppbarButtons.BIGPICTURE]
+                    ? [
+                        AppbarButtons.BIGPICTURE,
+                    ]
+                    : []
+            ).concat(
+                (filteredGames.length === 0)
+                    ? [
+                        AppbarButtons.VIEWSELECTOR,
+                        AppbarButtons.FILTER,
+                        AppbarButtons.ORDERBOX
+                    ]
                     : []
             ),
             onCollectionsClick: handleCollectionToggleClick,
             toolbarProps: {
-                showToolbar: filteredGames.length > 0,
                 defaultViewStyle: appContext.gameViewKind,
                 defaultFilterData: defaultFilterData,
                 filterData: filterData,

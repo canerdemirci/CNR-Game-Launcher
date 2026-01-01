@@ -27,7 +27,8 @@ export default function EditGame() {
             pageTitle: "Edit Game",
             excludedButtons: [
                 AppbarButtons.SETTINGS, AppbarButtons.ADD, AppbarButtons.COLLECTIONS,
-                AppbarButtons.TOOLBAR
+                AppbarButtons.BIGPICTURE, AppbarButtons.ORDERBOX, AppbarButtons.FILTER,
+                AppbarButtons.VIEWSELECTOR, AppbarButtons.SEARCH
             ]
         })
 

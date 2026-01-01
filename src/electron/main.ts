@@ -357,6 +357,18 @@ app.on('ready', () => {
         }
     )
     ipcMainHandle(
+        'selectFile',
+        async (options: Electron.OpenDialogOptions): Promise<string[]> => {
+            try {
+                const result = await dialog.showOpenDialog(options)
+                return result.filePaths
+            } catch (error) {
+                console.error('Error selecting file:', error)
+                return []
+            }
+        }
+    )
+    ipcMainHandle(
         'deleteGameIcons',
         async (files: Array<string | undefined>): Promise<{ success: boolean, error?: string }> => {
             try {

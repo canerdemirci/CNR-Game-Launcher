@@ -18,7 +18,12 @@ electron.contextBridge.exposeInMainWorld("electron", {
       setWindowsBootStartOption: (startOnWindowsBoot: boolean) => ipcSend(
         'setWindowsBootStartOption',
         startOnWindowsBoot
-      )
+      ),
+      setReviewReminder: (date: Date, periodWeek: number, complete: boolean) =>
+        ipcSend('setReviewReminder', { date, periodWeek, complete }),
+      getReviewReminder: () => ipcInvoke('getReviewReminder'),
+      openReviewPage: () => ipcSend('openReviewPage'),
+      mailFeedback: () => ipcSend('mailFeedback')
     },
     gameCollections: {
       get: () => ipcInvoke('getCollections'),

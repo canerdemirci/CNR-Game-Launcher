@@ -16,7 +16,15 @@ interface Window {
             close: () => void,
             backup: () => Promise<BackupProcessResult>,
             restoreBackup: () => Promise<BackupRestoreProcessResult | void>,
-            setWindowsBootStartOption: (startOnWindowsBoot: boolean) => void
+            setWindowsBootStartOption: (startOnWindowsBoot: boolean) => void,
+            setReviewReminder: (date: Date, periodWeek: number, complete: boolean) => void,
+            getReviewReminder: () => Promise<{
+                date: Date,
+                periodWeek: number,
+                complete: boolean
+            } | null>,
+            openReviewPage: () => void,
+            mailFeedback: () => void
         },
         gameCollections: {
             get: () => Promise<GameCollection[]>,
@@ -78,6 +86,10 @@ type EventPayloadMapping = {
     selectFile: Electron.OpenDialogOptions
     deleteGameIcons: Array<string | undefined>
     setCollections: { id: string, collectionIds: string[] }
+    setReviewReminder: { date: Date, periodWeek: number, complete: boolean }
+    getReviewReminder: void
+    openReviewPage: void
+    mailFeedback: void
 }
 
 type EventReturnMapping = {
@@ -112,6 +124,10 @@ type EventReturnMapping = {
     selectFile: string[]
     deleteGameIcons: { success: boolean, error?: string }
     setCollections: void
+    setReviewReminder: void
+    getReviewReminder: { date: Date, periodWeek: number, complete: boolean } | null
+    openReviewPage: void
+    mailFeedback: void
 }
 
 type BackupProcessResult = 'completed' | 'canceled'
@@ -144,6 +160,11 @@ type UserPreferences = {
     gameViewKind?: 'list' | 'icon' | 'card'
     openBigpictureMode?: boolean
     startOnWindowsBoot?: boolean
+    reviewRemind?: {
+        date: Date,
+        periodWeek: number
+        complete: boolean
+    }
 }
 
 type GameCollection = {

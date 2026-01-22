@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react"
 import Button, { buttonStyleVariants } from "../../../form_elements/Button"
 import { CheckList, CheckListItem } from "../../../form_elements/CheckList"
 import { useWindowModal } from "../../../providers/WindowModalProvider"
-import clsx from "clsx"
 
 interface Props {
     collections: GameCollection[]

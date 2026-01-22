@@ -157,22 +157,28 @@ export default function Games({
                         {
                             games.map((g, gi) => (
                                 <motion.div
-                                    key={g.id}
+                                    key={g.id + selectedCollection?.id + selectedCollection?.name}
                                     initial={{ opacity: 0, scale: 0.9 }}
                                     animate={{ opacity: [0, 1], scale: [0.9, 1] }}
                                     transition={{
                                         duration: 0.1,
                                         delay: gi * 0.05,
                                         type: 'spring',
-                                        damping: 5
+                                        damping: 5,
                                     }}
                                     className={clsx([
                                         selectedGame?.id === g.id && [
-                                            "bg-sky-200 border border-sky-400",
+                                            "bg-sky-200 border-sky-400",
                                             "dark:bg-gray-900 dark:border-gray-700"
                                         ],
+                                        "border",
                                         "w-25 p-2", "drop-shadow-xl",
-                                        "rounded-md"
+                                        "rounded-md",
+                                        selectedGame?.id !== g.id && [
+                                            "border-transparent",
+                                            "hover:bg-sky-100 hover:border hover:border-sky-300",
+                                            "dark:hover:bg-gray-800 dark:hover:border-gray-600"
+                                        ]
                                     ])}
                                     onClick={() => setSelectedGame(g)}
                                     onDoubleClick={() => gameOnClick(g)}
@@ -226,10 +232,10 @@ export default function Games({
                         {
                             games.map((g, gi) => (
                                 <motion.div
+                                    key={g.id + selectedCollection?.id + selectedCollection?.name}
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: [0, 1] }}
                                     transition={{ duration: 0.7, delay: gi * 0.07 }}
-                                    key={g.id}
                                     className={clsx([
                                         "relative group", "gradient_anim2",
                                         "rounded-md", "cursor-pointer", "aspect-2/3",

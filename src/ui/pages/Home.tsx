@@ -26,6 +26,7 @@ import GameCollectionUpdate from "./components/home/GameCollectionUpdate"
 import Collections, { SIDE_MENU_MAX_WIDTH } from "./components/home/Collections"
 import StatusBar from "./components/home/StatusBar"
 import { useAppData } from "../providers/DataProvider"
+import ReviewRemindWindow from "./components/home/ReviewRemindWindow"
 
 const defaultFilterData: FilterData = {
     installedOnes: false,
@@ -86,6 +87,54 @@ export default function Home() {
     useEffect(() => {
         fetchGames()
         fetchCollections()
+        
+        window.electron.app.getReviewReminder()
+            .then((rreminder) => {
+                const now = Date.now()
+                const oneWeek = 7 * 24 * 60 * 60 * 1000
+
+                if (!rreminder) {
+                    return window.electron.app.setReviewReminder(
+                        new Date(now + oneWeek), 1, false
+                    )
+                }
+
+                if (rreminder.complete) return
+                
+                if (now >= new Date(rreminder!.date).getTime()) {
+                    showWindow(
+                        "Enjoying the App?",
+                        <ReviewRemindWindow />,
+                        (data) => {
+                            if (data === 'yes') {
+                                window.electron.app.openReviewPage()
+                                window.electron.app.setReviewReminder(
+                                    new Date(now), 1, true
+                                )
+                            } else if (data === 'notnow' || !data) {
+                                if (rreminder.periodWeek === 1) {
+                                    window.electron.app.setReviewReminder(
+                                        new Date(now + (2 * oneWeek)), 2, false
+                                    )
+                                } else {
+                                    window.electron.app.setReviewReminder(
+                                        new Date(now + (4 * oneWeek)), 4, false
+                                    )
+                                }
+                            } else if (data === 'no') {
+                                window.electron.app.setReviewReminder(
+                                    new Date(now), 1, true
+                                )
+                            } else if (data === 'mailfeedback') {
+                                window.electron.app.mailFeedback()
+                                window.electron.app.setReviewReminder(
+                                    new Date(now + (12 * oneWeek)), 12, false
+                                )
+                            }
+                        }
+                   )
+                }
+            })
     }, [])
 
     useEffect(() => {

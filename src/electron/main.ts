@@ -112,6 +112,16 @@ const storeSchema = {
                         },
                         openBigpictureMode: { type: 'boolean', nullable: true },
                         startOnWindowsBoot: { type: 'boolean', nullable: true },
+                        reviewRemind: {
+                            type: 'object',
+                            properties: {
+                                date: { type: 'string' },
+                                periodWeek: { type: 'number' },
+                                complete: { type: 'boolean' },
+                            },
+                            required: ['date', 'periodWeek', 'complete'],
+                            additionalProperties: false,
+                        },
                     },
                     additionalProperties: false,
                 },
@@ -439,6 +449,42 @@ app.on('ready', () => {
                     mainWindow.setSimpleFullScreen(isFullscreen)
                 }
             }
+        }
+    )
+    ipcMainOn(
+        'setReviewReminder',
+        (payload: { date: Date, periodWeek: number, complete: boolean }) => {
+            userPreferencesStore.setUserPreferences({
+                ...userPreferencesStore.getUserPreferences(),
+                reviewRemind: {
+                    date: payload.date,
+                    periodWeek: payload.periodWeek,
+                    complete: payload.complete
+                }
+            })
+        }
+    )
+    ipcMainHandle(
+        'getReviewReminder',
+        () => {
+            const prefs = userPreferencesStore.getUserPreferences()
+            return prefs?.reviewRemind ?? null
+        }
+    )
+    ipcMainOn(
+        'openReviewPage',
+        () => {
+            const reviewUrl = 'ms-windows-store://review/?PFN=' +
+                '53688canerdemirci.CNRGameLauncher_1664z019f5cze' // Windows Store URL
+            shell.openExternal(reviewUrl)
+        }
+    ),
+    ipcMainOn(
+        'mailFeedback',
+        () => {
+            const mailtoUrl = 'mailto:canerdemircidev@outlook.com' +
+                '?subject=' + encodeURIComponent(`CNR Game Launcher Feedback v${app.getVersion()}`)
+            shell.openExternal(mailtoUrl)
         }
     )
 })

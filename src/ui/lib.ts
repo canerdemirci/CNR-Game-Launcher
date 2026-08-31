@@ -137,3 +137,19 @@ export function saveUserPreferencesOnExit(
 export function setWindowsBootStartOption(startOnWindowsBoot: boolean) {
     window.electron.app.setWindowsBootStartOption(startOnWindowsBoot)
 }
+
+export function getSteamData(): Promise<SteamGameData[]> {
+    return window.electron.getSteamData()
+}
+
+export function getEpicData(): Promise<EpicGameData[]> {
+    return window.electron.getEpicData()
+}
+
+export function getEaGamesData(): Promise<EaGameData[]> {
+    return window.electron.getEaGamesData()
+}
+
+export function getUplayGamesData(): Promise<UplayGameData[]> {
+    return window.electron.getUplayGamesData()
+}

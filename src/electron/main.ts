@@ -11,6 +11,9 @@ import * as fs from 'fs/promises'
 import * as fsExtra from 'fs-extra'
 import { dialog } from 'electron/main'
 import _Ajv from 'ajv'
+import { parse as parseVDF } from '@node-steam/vdf'
+import { promisify } from 'util'
+import { exec, execFile } from 'child_process'
 
 const Ajv = _Ajv as unknown as typeof _Ajv.default
 const ajv = new Ajv({ allErrors: true })
@@ -375,6 +378,377 @@ app.on('ready', () => {
             } catch (error) {
                 console.error('Error selecting file:', error)
                 return []
+            }
+        }
+    )
+    ipcMainHandle(
+        'getSteamData',
+        async (): Promise<SteamGameData[]> => {
+            let steamPath = "/users/canerdemirci/Library/Application Support/Steam/steamapps"
+
+            if (process.platform !== 'darwin') {
+                const execAsync = promisify(exec)
+
+                try {
+                    const { stdout } = await execAsync(
+                        'reg query "HKCU\\Software\\Valve\\Steam" /v "SteamPath"')
+                    const match = stdout.match(/SteamPath\s+REG_SZ\s+(.*)/)
+        
+                    if (match && match[1]) {
+                       steamPath = path.normalize(match[1].trim()) + "/steamapps"
+                    }
+                } catch (_) {
+                    throw new Error("Steam installation path not found in the registry.")
+                }
+            }
+
+            let vdf: any
+            let libPaths: string[] = []
+
+            const steamGames: SteamGameData[] = []
+
+            // Check if the Steam folder exists
+            try {
+                await fs.readdir(steamPath)
+            } catch (_) {
+                throw new Error("Steam folder not found.")
+            }
+
+            // Read and parse the libraryfolders.vdf file
+            try {
+                const vdfData = await fs.readFile(
+                    path.join(steamPath, "libraryfolders.vdf"), 'utf-8')
+                vdf = parseVDF(vdfData)
+
+                for (let i=0; i<Object.keys(vdf.libraryfolders).length; i++) {
+                    const libPath = vdf.libraryfolders[i].path
+                    libPaths.push(libPath)
+                }
+            } catch (_) {
+                throw new Error("Steam libraryfolders.vdf file not found.")
+            }
+
+            // Read acf files in each library folder to get game information
+            for (const libPath of libPaths) {
+                try {
+                    const acfFiles = await fs.readdir(path.join(libPath, "steamapps"))
+                    const manifestRegex = /^appmanifest_(.+)\.acf$/i
+
+                    let matchCount = 0
+
+                    for (const acfFile of acfFiles) {
+                        const match = acfFile.match(manifestRegex)
+
+                        if (match) {
+                            matchCount++
+
+                            const acfData = await fs.readFile(
+                                path.join(libPath, "steamapps", acfFile), 'utf-8')
+                            const acfParsed = parseVDF(acfData)
+                            
+                            steamGames.push({
+                                appId: acfParsed.AppState.appid,
+                                name: acfParsed.AppState.name
+                            })
+                        }
+                    }
+
+                    if (matchCount === 0) throw new Error(
+                        "Not found any appmanifest_*.acf files in the library folder.")
+                } catch (_) {
+                    throw new Error(`Steam games not read`)
+                }
+            }
+
+            return steamGames
+        }
+    )
+    ipcMainHandle(
+        'getEpicData',
+        async (): Promise<EpicGameData[]> => {
+            const epicPath = "c:/ProgramData/Epic/EpicGamesLauncher/Data/Manifests"
+            const epicGames: EpicGameData[] = []
+
+            // Check if the EpicGames folder exists
+            try {
+                await fs.readdir(epicPath)
+            } catch (_) {
+                throw new Error("EpicGames folder not found.")
+            }
+
+            // Read and parse .item files in the EpicGames manifests folder
+            try {
+                const itemFiles = await fs.readdir(epicPath)
+                const itemRegex = /^.+\.item$/i
+
+                let matchCount = 0
+
+                for (const itemFile of itemFiles) {
+                    const match = itemFile.match(itemRegex)
+
+                    if (match) {
+                        matchCount++
+                        const itemData = await fs.readFile(path.join(epicPath, itemFile), 'utf-8')
+                        const itemParsed = JSON.parse(itemData)
+
+                        epicGames.push({
+                            appName: itemParsed.AppName,
+                            displayName: itemParsed.DisplayName
+                        })
+                    }
+                }
+
+                if (matchCount === 0) throw new Error(
+                    "Not found any .item files in the EpicGames manifests folder.")
+            } catch (_) {
+                throw new Error("EpicGames manifests not read.")
+            }
+
+            return epicGames
+        }
+    )
+    ipcMainHandle(
+        'getEaGamesData',
+        async (): Promise<EaGameData[]> => {
+            const eaGames: EaGameData[] = []
+
+            if (process.platform === 'darwin') {
+                return eaGames
+            }
+
+            const execFileAsync = promisify(execFile)
+
+            const baseKeys = [
+                'HKLM\\SOFTWARE\\WOW6432Node\\Origin Games',
+                'HKLM\\SOFTWARE\\Origin Games',
+                'HKLM\\SOFTWARE\\WOW6432Node\\EA Games',
+                'HKLM\\SOFTWARE\\EA Games'
+            ]
+
+            try {
+                for (const baseKey of baseKeys) {
+                    let mainStdout: string
+
+                    try {
+                        const result = await execFileAsync(
+                            'reg',
+                            ['query', baseKey]
+                        )
+
+                        mainStdout = result.stdout
+                    } catch {
+                        continue
+                    }
+
+                    const normalizedBaseKey = baseKey.replace(
+                        /^HKLM/i,
+                        'HKEY_LOCAL_MACHINE'
+                    )
+
+                    const subKeyPaths = mainStdout
+                        .split(/\r?\n/)
+                        .map(line => line.trim())
+                        .filter(
+                            line =>
+                                line.startsWith(`${normalizedBaseKey}\\`)
+                        )
+
+                    for (const subKeyPath of subKeyPaths) {
+                        const gameId = subKeyPath.split('\\').pop() || ''
+
+                        if (!gameId || gameId === baseKey.split('\\').pop()) {
+                            continue
+                        }
+
+                        try {
+                            const { stdout } = await execFileAsync(
+                                'reg',
+                                [
+                                    'query',
+                                    subKeyPath,
+                                    '/v',
+                                    'DisplayName'
+                                ]
+                            )
+
+                            const match = stdout.match(
+                                /DisplayName\s+REG_\w+\s+(.+)/
+                            )
+
+                            if (match?.[1]) {
+                                const name = match[1].trim()
+
+                                if (
+                                    name &&
+                                    !eaGames.some(
+                                        game => game.gameId === gameId
+                                    )
+                                ) {
+                                    eaGames.push({
+                                        gameId,
+                                        name
+                                    })
+                                }
+                            }
+                        } catch {
+                            continue
+                        }
+                    }
+                }
+
+                if (eaGames.length === 0) {
+                    throw new Error('EA games not found')
+                }
+
+                return eaGames
+            } catch (error) {
+                console.error(
+                    'Failed to read EA Games registry:',
+                    error
+                )
+
+                throw new Error(
+                    'EA games registry records not found or could not be read'
+                )
+            }
+        }
+    )
+    ipcMainHandle(
+        'getUplayGamesData',
+        async (): Promise<UplayGameData[]> => {
+            const uplayGames: UplayGameData[] = []
+
+            if (process.platform === 'darwin') {
+                return uplayGames
+            }
+
+            const execFileAsync = promisify(execFile)
+
+            const baseKeys = [
+                'HKLM\\SOFTWARE\\Ubisoft\\Launcher\\Installs',
+                'HKLM\\SOFTWARE\\WOW6432Node\\Ubisoft\\Launcher\\Installs'
+            ]
+
+            try {
+                for (const baseKey of baseKeys) {
+                    let mainStdout: string
+
+                    // Ana Registry key'i yoksa diğerini dene.
+                    try {
+                        const { stdout } = await execFileAsync(
+                            'reg',
+                            ['query', baseKey]
+                        )
+
+                        mainStdout = stdout
+                    } catch {
+                        continue
+                    }
+
+                    // reg.exe:
+                    // HKLM -> HKEY_LOCAL_MACHINE
+                    const normalizedBaseKey = baseKey.replace(
+                        /^HKLM/i,
+                        'HKEY_LOCAL_MACHINE'
+                    )
+
+                    const subKeyPaths = mainStdout
+                        .split(/\r?\n/)
+                        .map(line => line.trim())
+                        .filter(line =>
+                            line.startsWith(`${normalizedBaseKey}\\`)
+                        )
+
+                    for (const subKeyPath of subKeyPaths) {
+                        // Örneğin:
+                        // HKEY_LOCAL_MACHINE\SOFTWARE\Ubisoft\Launcher\Installs\12345
+                        //
+                        // sonuç:
+                        // 12345
+                        const gameId =
+                            subKeyPath.split('\\').pop() || ''
+
+                        if (!gameId) {
+                            continue
+                        }
+
+                        let installDir: string
+
+                        // Her subkey içerisindeki InstallDir değerini oku.
+                        try {
+                            const { stdout } = await execFileAsync(
+                                'reg',
+                                [
+                                    'query',
+                                    subKeyPath,
+                                    '/v',
+                                    'InstallDir'
+                                ]
+                            )
+
+                            const match = stdout.match(
+                                /InstallDir\s+REG_\w+\s+(.+)/
+                            )
+
+                            if (!match?.[1]) {
+                                continue
+                            }
+
+                            installDir = match[1].trim()
+                        } catch {
+                            // InstallDir olmayan subkey'leri atla.
+                            continue
+                        }
+
+                        if (!installDir) {
+                            continue
+                        }
+
+                        // Örneğin:
+                        // C:\Games\Ubisoft\Assassin's Creed Valhalla
+                        //
+                        // sonuç:
+                        // Assassin's Creed Valhalla
+                        const name =
+                            installDir
+                                .replace(/[\\/]+$/, '')
+                                .split(/[\\/]/)
+                                .pop() || ''
+
+                        if (!name) {
+                            continue
+                        }
+
+                        // Aynı oyun iki Registry view'da bulunabilir.
+                        const alreadyExists = uplayGames.some(
+                            game => game.gameId === gameId
+                        )
+
+                        if (alreadyExists) {
+                            continue
+                        }
+
+                        uplayGames.push({
+                            gameId,
+                            name
+                        })
+                    }
+                }
+
+                if (uplayGames.length === 0) {
+                    throw new Error('Uplay games not found')
+                }
+
+                return uplayGames
+            } catch (error) {
+                console.error(
+                    'Failed to read Uplay games registry:',
+                    error
+                )
+
+                throw new Error(
+                    'Uplay games registry records not found or could not be read'
+                )
             }
         }
     )

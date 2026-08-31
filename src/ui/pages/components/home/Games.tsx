@@ -51,6 +51,22 @@ export default function Games({
     const [selectedGame, setSelectedGame] = useState<Game | null>(null)
 
     useEffect(() => {
+        if (!selectedGame) return
+
+        const keyDownHandler = (e: React.KeyboardEvent) => {
+            if (e.key === 'Enter') {
+                gameOnClick(selectedGame)
+            }
+        }
+
+        window.addEventListener('keydown', keyDownHandler as any)
+
+        return () => {
+            window.removeEventListener('keydown', keyDownHandler as any)
+        }
+    }, [selectedGame])
+
+    useEffect(() => {
         gamesRef.current?.scrollTo({ top: 0, behavior: 'instant' })
     }, [games])
     

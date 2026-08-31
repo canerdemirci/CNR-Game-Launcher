@@ -4,7 +4,7 @@ export default function GamePathCopyChip() {
     return (
         <div className="flex flex-wrap items-center gap-4">
             <CopyChip title="Steam" text="steam://rungameid/<game id>" />
-            <CopyChip title="EA Games" text="ealaunch://<gameid>" />
+            <CopyChip title="EA Games" text="origin2://game/launch/?offerIds=<offerIds>" />
             <CopyChip title="Ubisoft" text="uplay://launch/<gameID>/0" />
             <CopyChip title="Xbox" text="xbox://<something>" />
             <CopyChip

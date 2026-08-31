@@ -50,7 +50,11 @@ interface Window {
             setCollections: (id: string, collectionIds: string[]) => void
         },
         saveImage: (imageData: string) => Promise<ImageUploadResult>,
-        selectFile: (options: Electron.OpenDialogOptions) => Promise<string[]>
+        selectFile: (options: Electron.OpenDialogOptions) => Promise<string[]>,
+        getSteamData: () => Promise<SteamGameData[]>,
+        getEpicData: () => Promise<EpicGameData[]>,
+        getEaGamesData: () => Promise<EaGameData[]>,
+        getUplayGamesData: () => Promise<UplayGameData[]>
     }
 }
 
@@ -84,6 +88,10 @@ type EventPayloadMapping = {
     removeAGameFromAllCollections: string
     saveImage: string
     selectFile: Electron.OpenDialogOptions
+    getSteamData: void
+    getEpicData: void
+    getEaGamesData: void
+    getUplayGamesData: void
     deleteGameIcons: Array<string | undefined>
     setCollections: { id: string, collectionIds: string[] }
     setReviewReminder: { date: Date, periodWeek: number, complete: boolean }
@@ -122,6 +130,10 @@ type EventReturnMapping = {
     removeAGameFromAllCollections: void
     saveImage: ImageUploadResult
     selectFile: string[]
+    getSteamData: SteamGameData[]
+    getEpicData: EpicGameData[]
+    getEaGamesData: EaGameData[]
+    getUplayGamesData: UplayGameData[]
     deleteGameIcons: { success: boolean, error?: string }
     setCollections: void
     setReviewReminder: void
@@ -184,4 +196,24 @@ type Game = {
     iconPath?: string,
     cardIconPath?: string,
     collectionIds: string[]
+}
+
+type SteamGameData = {
+    appId: string,
+    name: string
+}
+
+type EpicGameData = {
+    appName: string,
+    displayName: string
+}
+
+type EaGameData = {
+    gameId: string,
+    name: string
+}
+
+type UplayGameData = {
+    gameId: string,
+    name: string
 }

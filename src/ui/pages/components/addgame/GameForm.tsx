@@ -9,6 +9,7 @@ import TextInput, { textInputStyleVariants } from "../../../form_elements/TextIn
 import GamePathCopyChip from "./GamePathCopyChip"
 import { useMessageModal } from "../../../providers/MessageModalProvider"
 import { useAppContext } from "../../../providers/AppContextProvider"
+import CopyChip from "../../../components/CopyChip"
 
 export type GameFormData = {
     name: string

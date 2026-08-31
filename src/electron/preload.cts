@@ -65,7 +65,11 @@ electron.contextBridge.exposeInMainWorld("electron", {
       )
     },
     saveImage: (imageData: string) => ipcInvoke('saveImage', imageData),
-    selectFile: (options: Electron.OpenDialogOptions) => ipcInvoke('selectFile', options)
+    selectFile: (options: Electron.OpenDialogOptions) => ipcInvoke('selectFile', options),
+    getSteamData: () => ipcInvoke('getSteamData'),
+    getEpicData: () => ipcInvoke('getEpicData'),
+    getEaGamesData: () => ipcInvoke('getEaGamesData'),
+    getUplayGamesData: () => ipcInvoke('getUplayGamesData')
 } satisfies Window['electron'])
 
 function ipcInvoke<Key extends keyof EventPayloadMapping>(

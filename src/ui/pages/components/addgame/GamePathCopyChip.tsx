@@ -6,7 +6,7 @@ export default function GamePathCopyChip() {
             <CopyChip title="Steam" text="steam://rungameid/<game id>" />
             <CopyChip title="EA Games" text="origin2://game/launch/?offerIds=<offerIds>" />
             <CopyChip title="Ubisoft" text="uplay://launch/<gameID>/0" />
-            <CopyChip title="Xbox" text="xbox://<something>" />
+            <CopyChip title="Xbox" text="msgamelaunch://shortcutLaunch/?ProductId=<productId>" />
             <CopyChip
                 title="Epic Games"
                 text="com.epicgames.launcher://apps/<appname>?action=launch"

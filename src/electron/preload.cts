@@ -69,6 +69,7 @@ electron.contextBridge.exposeInMainWorld("electron", {
     getSteamData: () => ipcInvoke('getSteamData'),
     getEpicData: () => ipcInvoke('getEpicData'),
     getEaGamesData: () => ipcInvoke('getEaGamesData'),
+    getXboxGamesData: () => ipcInvoke('getXboxGamesData'),
     getUplayGamesData: () => ipcInvoke('getUplayGamesData')
 } satisfies Window['electron'])
 

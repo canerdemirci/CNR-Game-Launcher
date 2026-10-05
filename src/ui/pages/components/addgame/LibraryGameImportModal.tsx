@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import Button, { buttonStyleVariants } from "../../../form_elements/Button"
-import { addGame, getEaGamesData, getEpicData, getSteamData, getUplayGamesData } from "../../../lib"
+import { addGame, getEaGamesData, getEpicData, getSteamData, getUplayGamesData, getXboxGamesData } from "../../../lib"
 import { useWindowModal } from "../../../providers/WindowModalProvider"
 import StickLoading from "../../../components/StickLoading"
 import { useMessageModal } from "../../../providers/MessageModalProvider"
@@ -110,7 +110,7 @@ function GameSelector({
 }
 
 interface Props {
-    library: "steam" | "epic" | "eagames" | "uplay"
+    library: "steam" | "epic" | "eagames" | "xbox" | "uplay"
 }
 
 export default function LibraryGameImportModal({ library }: Props) {
@@ -167,6 +167,20 @@ export default function LibraryGameImportModal({ library }: Props) {
                         setIsFetching(false)
                     }, 2000)
                 })
+        } else if (library === 'xbox') {
+            getXboxGamesData()
+                .then(res => {
+                    const ngData = res.map(r => ({ id: r.gameId, name: r.name }))
+                    setGameData(ngData)
+                    setSelectedGames([...ngData])
+                    setFetchError(false)
+                })
+                .catch(_ => setFetchError(true))
+                .finally(() => {
+                    setTimeout(() => {
+                        setIsFetching(false)
+                    }, 2000)
+                })
         } else if (library === 'uplay') {
             getUplayGamesData()
                 .then(res => {
@@ -208,7 +222,9 @@ export default function LibraryGameImportModal({ library }: Props) {
                                                         ? "Steam Games"
                                                             : library === 'uplay'
                                                                 ? "Uplay Games"
-                                                                    : ""
+                                                                    : library === 'xbox'
+                                                                        ? "Xbox Games"
+                                                                            : ""
                                 }
                                 gameData={gameData}
                                 onSelect={(sgames) => {
@@ -231,7 +247,9 @@ export default function LibraryGameImportModal({ library }: Props) {
                                         ? `com.epicgames.launcher://apps/${game.id}?action=launch&silent=true` :
                                     library === 'eagames'
                                         ? `origin2://game/launch/?offerIds=${game.id}` :
-                                            `uplay://launch/${game.id}/0`
+                                    library === 'xbox'
+                                        ? `msgamelaunch://shortcutLaunch/?ProductId=${game.id}`
+                                        : `uplay://launch/${game.id}/0`
 
                                 addGame({
                                     name: game.name,

@@ -614,6 +614,93 @@ app.on('ready', () => {
         }
     )
     ipcMainHandle(
+        'getXboxGamesData',
+        async (): Promise<XboxGameData[]> => {
+            const xboxGames: XboxGameData[] = []
+
+            if (process.platform === 'darwin') {
+                return xboxGames
+            }
+
+            const driveLetters = ['C', 'D', 'E', 'F', 'G', 'H']
+
+            const xboxGamesFolderPaths: string[] = []
+
+            for (const driveLetter of driveLetters) {
+                try {
+                    await fs.access(`${driveLetter}:/.GamingRoot`)
+
+                    const buffer: Buffer = await fs.readFile(`${driveLetter}:/.GamingRoot`)
+                    const rawFolderBuffer = buffer.subarray(8)
+                    const folderName = rawFolderBuffer.toString('utf16le').replace(/\0/g, '').trim()
+                    
+                    const fullFolderPath = `${driveLetter}:/${folderName}`
+
+                    await fs.access(fullFolderPath)
+
+                    xboxGamesFolderPaths.push(fullFolderPath)
+                } catch {
+                    continue
+                }
+            }
+
+            if (xboxGamesFolderPaths.length === 0) {
+                throw new Error('Xbox Games cannot be found on any of the drives')
+            }
+
+            const gameFoldersWithPaths = await Promise.all(
+                xboxGamesFolderPaths.map(async (folderPath) => {
+                    try {
+                        const folders = await fs.readdir(folderPath)
+                        
+                        return folders.map(folder => ({
+                            parentPath: folderPath,
+                            folderName: folder
+                        }))
+                    } catch {
+                        return []
+                    }
+                })
+            ).then(results => results.flat())
+
+            for (const game of gameFoldersWithPaths) {
+                if (game.folderName === 'GameSave') continue
+
+                const configFilePath = path.join(
+                    game.parentPath,
+                    game.folderName,
+                    'Content',
+                    'MicrosoftGame.config'
+                )
+
+                try {
+                    await fs.access(configFilePath)
+
+                    const configFileContent = await fs.readFile(configFilePath, 'utf-8')
+
+                    const gameIdMatch = configFileContent.match(/<StoreId>\s*(.*?)\s*<\/StoreId>/i)
+                    const nameMatch = configFileContent
+                        .match(/DefaultDisplayName\s*=\s*["'](.*?)["']/i)
+
+                    if (gameIdMatch && nameMatch) {
+                        const gameId = gameIdMatch[1]
+                        const name = nameMatch[1]
+
+                        xboxGames.push({ gameId, name })
+                    }
+                } catch {
+                    continue
+                }
+            }
+
+            if (xboxGames.length === 0) {
+                throw new Error('Xbox Games cannot be found on any of the drives')
+            }
+
+            return xboxGames
+        }
+    )
+    ipcMainHandle(
         'getUplayGamesData',
         async (): Promise<UplayGameData[]> => {
             const uplayGames: UplayGameData[] = []

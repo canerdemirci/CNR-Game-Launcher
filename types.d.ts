@@ -54,6 +54,7 @@ interface Window {
         getSteamData: () => Promise<SteamGameData[]>,
         getEpicData: () => Promise<EpicGameData[]>,
         getEaGamesData: () => Promise<EaGameData[]>,
+        getXboxGamesData: () => Promise<XboxGameData[]>,
         getUplayGamesData: () => Promise<UplayGameData[]>
     }
 }
@@ -91,6 +92,7 @@ type EventPayloadMapping = {
     getSteamData: void
     getEpicData: void
     getEaGamesData: void
+    getXboxGamesData: void
     getUplayGamesData: void
     deleteGameIcons: Array<string | undefined>
     setCollections: { id: string, collectionIds: string[] }
@@ -133,6 +135,7 @@ type EventReturnMapping = {
     getSteamData: SteamGameData[]
     getEpicData: EpicGameData[]
     getEaGamesData: EaGameData[]
+    getXboxGamesData: XboxGameData[]
     getUplayGamesData: UplayGameData[]
     deleteGameIcons: { success: boolean, error?: string }
     setCollections: void
@@ -209,6 +212,11 @@ type EpicGameData = {
 }
 
 type EaGameData = {
+    gameId: string,
+    name: string
+}
+
+type XboxGameData = {
     gameId: string,
     name: string
 }

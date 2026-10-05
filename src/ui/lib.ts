@@ -150,6 +150,10 @@ export function getEaGamesData(): Promise<EaGameData[]> {
     return window.electron.getEaGamesData()
 }
 
+export function getXboxGamesData(): Promise<XboxGameData[]> {
+    return window.electron.getXboxGamesData()
+}
+
 export function getUplayGamesData(): Promise<UplayGameData[]> {
     return window.electron.getUplayGamesData()
 }

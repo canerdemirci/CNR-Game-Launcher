@@ -10,6 +10,7 @@ import SteamLogo from "../assets/steam.png"
 import EpicLogo from "../assets/epic.png"
 import EaLogo from "../assets/eagames.png"
 import UplayLogo from "../assets/uplay.png"
+import XboxLogo from "../assets/xbox-logo.png"
 import { useWindowModal } from "../providers/WindowModalProvider"
 import LibraryGameImportModal from "./components/addgame/LibraryGameImportModal"
 
@@ -92,6 +93,18 @@ export default function AddGame() {
         )
     }
 
+    function handleGetXboxGamesDataBtnClick() {
+        showWindow(
+            "Import Xbox Games",
+            <LibraryGameImportModal library="xbox" />,
+            (res) => {
+                if (res === 'yes') {
+                    navigate('/home')
+                }
+            }
+        )
+    }
+
     function handleGetUplayGamesDataBtnClick() {
         showWindow(
             "Import Uplay Games",
@@ -142,6 +155,15 @@ export default function AddGame() {
                         <div className="flex flex-col items-center gap-1">
                             <img src={EaLogo} alt="Epic Logo" className="w-8 h-8" />
                             <p className="text-sm font-bold dark:text-gray-100">Ea Games</p>
+                        </div>
+                    </button>
+                    <button
+                        className="outline-none cursor-pointer hover:opacity-80"
+                        onClick={handleGetXboxGamesDataBtnClick}
+                    >
+                        <div className="flex flex-col items-center gap-1">
+                            <img src={XboxLogo} alt="Epic Logo" className="w-8 h-8" />
+                            <p className="text-sm font-bold dark:text-gray-100">Xbox Games</p>
                         </div>
                     </button>
                     <button

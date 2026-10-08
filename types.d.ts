@@ -55,7 +55,8 @@ interface Window {
         getEpicData: () => Promise<EpicGameData[]>,
         getEaGamesData: () => Promise<EaGameData[]>,
         getXboxGamesData: () => Promise<XboxGameData[]>,
-        getUplayGamesData: () => Promise<UplayGameData[]>
+        getUplayGamesData: () => Promise<UplayGameData[]>,
+        goToAIWebsiteWithQuery: (query: string) => void
     }
 }
 
@@ -94,6 +95,7 @@ type EventPayloadMapping = {
     getEaGamesData: void
     getXboxGamesData: void
     getUplayGamesData: void
+    goToAIWebsiteWithQuery: string
     deleteGameIcons: Array<string | undefined>
     setCollections: { id: string, collectionIds: string[] }
     setReviewReminder: { date: Date, periodWeek: number, complete: boolean }
@@ -137,6 +139,7 @@ type EventReturnMapping = {
     getEaGamesData: EaGameData[]
     getXboxGamesData: XboxGameData[]
     getUplayGamesData: UplayGameData[]
+    goToAIWebsiteWithQuery: void
     deleteGameIcons: { success: boolean, error?: string }
     setCollections: void
     setReviewReminder: void

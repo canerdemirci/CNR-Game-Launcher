@@ -157,3 +157,7 @@ export function getXboxGamesData(): Promise<XboxGameData[]> {
 export function getUplayGamesData(): Promise<UplayGameData[]> {
     return window.electron.getUplayGamesData()
 }
+
+export function goToAIWebsiteWithQuery(query: string) {
+    window.electron.goToAIWebsiteWithQuery(query)
+}

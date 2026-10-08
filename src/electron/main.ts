@@ -839,6 +839,13 @@ app.on('ready', () => {
             }
         }
     )
+    ipcMainOn(
+        'goToAIWebsiteWithQuery',
+        (query: string) => {
+            const aiWebsiteUrl = `https://gemini.google.com/app?q=${encodeURIComponent(query)}`
+            shell.openExternal(aiWebsiteUrl)
+        }
+    )
     ipcMainHandle(
         'deleteGameIcons',
         async (files: Array<string | undefined>): Promise<{ success: boolean, error?: string }> => {

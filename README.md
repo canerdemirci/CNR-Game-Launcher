@@ -4,11 +4,12 @@ A modern, cross-platform desktop game launcher built with Electron and React. Or
 
 ## Description
 
-CNR Game Launcher allows you to manage your game library across different platforms and locations. Whether your games are installed on Steam, Epic Games, or standalone executables, this app provides a clean, customizable interface to organize, search, and launch them all from one place.
+CNR Game Launcher allows you to manage your game library across different platforms and locations. Whether your games are installed on Steam, Epic Games, Uplay, Xbox, Ea Games or standalone executables, this app provides a clean, customizable interface to organize, search, and launch them all from one place.
 
 ## What's new?
 
-- You can add games from your game libraries (steam, ea games, uplay, epic games) to the system.
+- You can add games from your game libraries (steam, ea games, uplay, xbox, epic games) to the system.
+- You can generate game icons or cover artwork by copying the prompt provided by this program and pasting it into your favorite AI tool.
 
 ## Features
 

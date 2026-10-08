@@ -1,6 +1,6 @@
 import clsx from "clsx"
 import { useEffect, useState } from "react"
-import { MdOutlineBrokenImage, MdUploadFile } from "react-icons/md"
+import { MdAssistant, MdOutlineBrokenImage, MdUploadFile } from "react-icons/md"
 import { PiDotsThreeOutlineFill } from "react-icons/pi"
 import Button, { buttonStyleVariants } from "../../../form_elements/Button"
 import CheckBox, { checkBoxStyleVariants } from "../../../form_elements/CheckBox"
@@ -9,6 +9,8 @@ import TextInput, { textInputStyleVariants } from "../../../form_elements/TextIn
 import GamePathCopyChip from "./GamePathCopyChip"
 import { useMessageModal } from "../../../providers/MessageModalProvider"
 import { useAppContext } from "../../../providers/AppContextProvider"
+import { goToAIWebsiteWithQuery } from "../../../lib"
+import { useWindowModal } from "../../../providers/WindowModalProvider"
 
 export type GameFormData = {
     name: string
@@ -34,6 +36,7 @@ export default function GameForm<T extends Mode>({
     onSubmit
 }: Props<T>) {
     const { showMessage } = useMessageModal()
+    const { showWindow, hideWindow } = useWindowModal()
     const { isFullscreen } = useAppContext()
     
     const [formData, setFormData] = useState<GameFormData>({
@@ -60,6 +63,16 @@ export default function GameForm<T extends Mode>({
             })
         }
     }, [game])
+
+    function aiPromptForGameArtwork(gameName: string, imageType: "icon" | "card") {
+        const prompt = `Create a ${imageType} artwork for the game "${gameName}". The artwork 
+        should be visually appealing, high-quality, and suitable for use as a ${imageType} icon.
+        ${imageType === "icon" ? "The icon should be square (480x480 px) and easily recognizable." :
+        "The game cover artwork should be rectangular (480x720 px) and visually striking."}
+        Please provide the artwork in a format that can be used for game display purposes.`
+
+        return prompt
+    }
 
     function handleGameNameChange(value: string) {
         setFormData(prev => ({ ...prev, name: value.trim() }))
@@ -226,7 +239,40 @@ export default function GameForm<T extends Mode>({
                                 onChange={handleIconFileChange}
                             />
                         </div>
-                        <span className="dark:text-white">Game Icon Image (optional) 480x480px</span>
+                        {formData.name.trim().length > 1 && (
+                            <button
+                                className="cursor-pointer"
+                                onClick={() => {
+                                    const prompt = aiPromptForGameArtwork(formData.name, "icon")
+
+                                    navigator.clipboard.writeText(prompt)
+
+                                    showWindow(
+                                        "AI Prompt Copied",
+                                        <div className="flex flex-col gap-4 items-center">
+                                            <p className="dark:text-white text-xl">
+                                                The AI prompt for generating the game icon has 
+                                                been copied to your clipboard. You can now paste it 
+                                                into an AI image generation tool.
+                                            </p>
+                                            <Button
+                                                caption="Go to AI Image Generation Website"
+                                                styleVariant={buttonStyleVariants[1]}
+                                                onClick={() => {
+                                                    goToAIWebsiteWithQuery(prompt)
+                                                    hideWindow()
+                                                }}
+                                            />
+                                        </div>
+                                    )
+                                }}
+                            >
+                                <MdAssistant size={28} className="dark:text-white" />
+                            </button>
+                        )}
+                        <span className="dark:text-white">
+                            Game Icon Image (optional) 480x480px
+                        </span>
                     </div>
                     <div
                         className={clsx([
@@ -276,6 +322,37 @@ export default function GameForm<T extends Mode>({
                                 onChange={handleCardIconFileChange}
                             />
                         </div>
+                        {formData.name.trim().length > 1 && (
+                            <button
+                                className="cursor-pointer"
+                                onClick={() => {
+                                    const prompt = aiPromptForGameArtwork(formData.name, "card")
+
+                                    navigator.clipboard.writeText(prompt)
+
+                                    showWindow(
+                                        "AI Prompt Copied",
+                                        <div className="flex flex-col gap-4 items-center">
+                                            <p className="dark:text-white text-xl">
+                                                The AI prompt for generating the game card icon has 
+                                                been copied to your clipboard. You can now paste it 
+                                                into an AI image generation tool.
+                                            </p>
+                                            <Button
+                                                caption="Go to AI Image Generation Website"
+                                                styleVariant={buttonStyleVariants[1]}
+                                                onClick={() => {
+                                                    goToAIWebsiteWithQuery(prompt)
+                                                    hideWindow()
+                                                }}
+                                            />
+                                        </div>
+                                    )
+                                }}
+                            >
+                                <MdAssistant size={28} className="dark:text-white" />
+                            </button>
+                        )}
                         <span className="dark:text-white">
                             Game Card Icon Image (optional) 480x720px
                         </span>

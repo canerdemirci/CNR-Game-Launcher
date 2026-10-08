@@ -70,7 +70,8 @@ electron.contextBridge.exposeInMainWorld("electron", {
     getEpicData: () => ipcInvoke('getEpicData'),
     getEaGamesData: () => ipcInvoke('getEaGamesData'),
     getXboxGamesData: () => ipcInvoke('getXboxGamesData'),
-    getUplayGamesData: () => ipcInvoke('getUplayGamesData')
+    getUplayGamesData: () => ipcInvoke('getUplayGamesData'),
+    goToAIWebsiteWithQuery: (query: string) => ipcSend('goToAIWebsiteWithQuery', query)
 } satisfies Window['electron'])
 
 function ipcInvoke<Key extends keyof EventPayloadMapping>(
